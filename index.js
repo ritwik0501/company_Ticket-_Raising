@@ -3,6 +3,9 @@ const app=express();
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRoute');
 const ticketRoutes = require('./routes/ticketRoutes');
+const compilenceRoutes =require('./routes/compilenceRoute');
+const departmentAssignmentRoutes =require('./routes/departmentAssignmentRoute');
+const teamLeadRoutes =require('./routes/teamLeadRoutes');
 const dbConfig = require('./config/db');
 const port=3123;    
 
@@ -16,6 +19,9 @@ app.use(cookieParser());
 
 app.use('/api/user', userRoutes);
 app.use('/api', ticketRoutes);
+app.use('/api/admin', compilenceRoutes);
+app.use('/api/department', departmentAssignmentRoutes);
+app.use('/api/tl', teamLeadRoutes);
 
 dbConfig().then(()=>{
     console.log('Database connected successfully');

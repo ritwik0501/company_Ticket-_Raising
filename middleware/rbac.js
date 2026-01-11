@@ -92,7 +92,7 @@ const managerOwnsDepartment = (req, res, next) => {
       message: 'Manager only'
     });
   }
-
+  console.log("req.assignment.department",req.user.department);
   if (req.assignment.department !== req.user.department) {
     return res.status(403).json({
       message: 'Access denied: Wrong department'
@@ -141,7 +141,7 @@ const teamLeadOwnsAssignment = (req, res, next) => {
   if (
     !req.assignment.assigned_team_lead_id ||
     req.assignment.assigned_team_lead_id.toString() !==
-      req.user._id.toString()
+      req.user.id
   ) {
     return res.status(403).json({
       message: 'Access denied: Not your assignment'
