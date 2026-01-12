@@ -27,3 +27,18 @@
 .glass-strong {
   @apply bg-white/10 backdrop-blur-2xl border border-white/20;
 }
+
+.glass {
+  background: rgba(17, 24, 39, 0.75); /* slate-900 */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition;
+}
+
+.btn-secondary {
+  @apply bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition;
+}

@@ -35,8 +35,8 @@ referenceID: { type: String },
     },
     reopenCount: { type: Number, default: 0 },
     warningFlag: { type: Boolean, default: false },
-    contact_email  : { type: String, required: true },
-    contact_phone  : { type: String, required: true },
+    contact_email  : { type: String, },
+    contact_phone  : { type: String,  },
     closedAt: { type: Date }
 },
  { timestamps: true }

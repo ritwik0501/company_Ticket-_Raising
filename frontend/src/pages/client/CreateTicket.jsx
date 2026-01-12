@@ -11,7 +11,7 @@ export default function CreateTicket() {
   const submit = async () => {
     await api.post('/tickets', data);
     alert('Ticket created');
-  };
+  }; 
 
   return (
     <div className="p-6">

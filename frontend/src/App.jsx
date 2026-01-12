@@ -12,9 +12,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
+        
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
+  
+        <Routes className="min-h-screen bg-slate-900 text-slate-200">
+         
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -40,8 +43,10 @@ function App() {
             <ProtectedRoute role="USER"><TeamLeadAssignments /></ProtectedRoute>
           } />
         </Routes>
+       
       </BrowserRouter>
     </AuthProvider>
+    
   );
 }
 

@@ -7,7 +7,7 @@ class DepartmentAssignmentController {
   async getManagerAssignments(req, res) {
     try {
       const assignments = await assignmentService.getManagerAssignments(req.user);
-
+      console.log("assignments",assignments);
       res.status(200).json({
         count: assignments.length,
         assignments
