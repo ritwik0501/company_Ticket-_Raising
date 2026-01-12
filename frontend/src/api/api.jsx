@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3123/api',
+  baseURL: 'https://company-ticket-raising-1.onrender.com/api',
     withCredentials: true
 });
 
