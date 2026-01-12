@@ -6,7 +6,7 @@ const jwt= require('jsonwebtoken');
       return jwt.sign(
       { sub: id, role: role, department: department ?? null, branch: branch ?? null },
       process.env.JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '1d' }
     );
   }
 

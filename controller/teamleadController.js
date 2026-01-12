@@ -4,6 +4,7 @@ class TeamLeadController {
   async getMyAssignments(req, res) {
     try {
       const assignments = await teamLeadService.getMyAssignments(req.user.id);
+      console.log("assignments",assignments);
 
       return res.status(200).json({
         count: assignments.length,

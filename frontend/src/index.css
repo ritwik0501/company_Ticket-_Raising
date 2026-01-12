@@ -1,44 +1,139 @@
 @import "tailwindcss";
 
-/* @tailwind base;
-@tailwind components; */
+@tailwind base;
+@tailwind components;
 @tailwind utilities;
 
-.input {
-  @apply border p-2 w-full rounded;
+/* =========================
+   BASE
+========================= */
+
+html,
+body {
+  @apply bg-slate-900 text-slate-100 antialiased;
 }
+
+/* Subtle background grain (premium feel) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle at top,
+    rgba(99, 102, 241, 0.06),
+    transparent 45%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.input {
+  @apply
+    w-full rounded-xl px-3 py-2.5
+    bg-slate-800/80 border border-slate-700
+    text-slate-100 placeholder-slate-400
+    focus:outline-none focus:ring-2 focus:ring-indigo-400
+    focus:border-indigo-400
+    transition;
+}
+
+/* =========================
+   BUTTONS
+========================= */
 
 .btn-primary {
-  @apply bg-black text-white px-4 py-2 rounded;
-}
-
-.card {
-  @apply border p-4 rounded mt-2 bg-white;
+  @apply
+    bg-indigo-500 hover:bg-indigo-600
+    text-white font-medium
+    px-4 py-2.5 rounded-xl
+    shadow-lg shadow-indigo-500/20
+    transition-all duration-200
+    active:scale-95;
 }
 
 .btn-secondary {
-  @apply border border-black text-black px-4 py-2 rounded;
+  @apply
+    bg-slate-700/80 hover:bg-slate-700
+    text-slate-200 font-medium
+    px-4 py-2.5 rounded-xl
+    border border-slate-600
+    transition-all duration-200
+    active:scale-95;
 }
 
+.btn-danger {
+  @apply
+    bg-rose-500 hover:bg-rose-600
+    text-white font-medium
+    px-4 py-2.5 rounded-xl
+    shadow-lg shadow-rose-500/20
+    transition-all duration-200;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+  @apply
+    bg-slate-800/80
+    border border-slate-700
+    rounded-2xl p-5
+    shadow-xl;
+}
+
+/* =========================
+   GLASSMORPHISM (2026)
+========================= */
+
 .glass {
-  @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  @apply
+    bg-white/6 backdrop-blur-xl
+    border border-white/12
+    rounded-2xl
+    shadow-xl shadow-black/20;
 }
 
 .glass-strong {
-  @apply bg-white/10 backdrop-blur-2xl border border-white/20;
+  @apply
+    bg-white/10 backdrop-blur-2xl
+    border border-white/20
+    rounded-3xl
+    shadow-2xl shadow-black/30;
 }
 
-.glass {
-  background: rgba(17, 24, 39, 0.75); /* slate-900 */
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* =========================
+   BADGES / STATUS
+========================= */
+
+.badge-success {
+  @apply
+    bg-emerald-400/15
+    text-emerald-300
+    border border-emerald-400/30;
 }
 
-/* Buttons */
-.btn-primary {
-  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition;
+.badge-warning {
+  @apply
+    bg-amber-400/15
+    text-amber-300
+    border border-amber-400/30;
 }
 
-.btn-secondary {
-  @apply bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition;
+.badge-danger {
+  @apply
+    bg-rose-400/15
+    text-rose-300
+    border border-rose-400/30;
+}
+
+.badge-info {
+  @apply
+    bg-indigo-400/15
+    text-indigo-300
+    border border-indigo-400/30;
 }

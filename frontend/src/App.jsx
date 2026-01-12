@@ -9,7 +9,7 @@ import ComplianceQueue from './pages/compliance/ComplianceQueue';
 import ManagerAssignments from './pages/manager/ManagerAssignments';
 import TeamLeadAssignments from './pages/teamlead/TeamLeadAssignments';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import TicketHistory from './pages/client/TicketHistory';
 function App() {
   return (
         
@@ -42,6 +42,15 @@ function App() {
           <Route path="/teamlead" element={
             <ProtectedRoute role="USER"><TeamLeadAssignments /></ProtectedRoute>
           } />
+
+          <Route
+  path="/tickets/history/:referenceId"
+  element={
+    <ProtectedRoute>
+      <TicketHistory />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
        
       </BrowserRouter>

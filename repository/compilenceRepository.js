@@ -43,7 +43,9 @@ class ComplianceRepository {
    */
   async getComplianceQueue() {
     return Ticket.find({
-      status: 'In Compliance Review'
+      status: {
+        $in: ['In Compliance Review', 'In Resolution', 'Ready to Close', 'Closed']
+      }
     }).sort({ createdAt: 1 });
   }
 }

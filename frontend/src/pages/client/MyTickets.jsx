@@ -1,123 +1,170 @@
-
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/api';
 import { useAuth } from '../../auth/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function MyTickets() {
   const { user } = useAuth();
   const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) return;
-
-    const fetchTickets = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const res = await api.get('/tickets/my-tickets');
-        const data = Array.isArray(res.data)
-          ? res.data
-          : res.data.tickets || [];
-        setTickets(data);
-      } catch (err) {
-        setError('Failed to load tickets');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTickets();
   }, [user]);
 
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/tickets/my-tickets');
+      const data = Array.isArray(res.data)
+        ? res.data
+        : res.data.tickets || [];
+      setTickets(data);
+    } catch (err) {
+      setError('Failed to load tickets');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reopenTicket = async (ticketId) => {
+    if (!window.confirm('Reopen this ticket?')) return;
+
+    try {
+      await api.post(`/tickets/${ticketId}/reopen`);
+      fetchTickets();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Reopen failed');
+    }
+  };
+
+  /* ---------- UI HELPERS ---------- */
+
+  const statusColor = (status) => {
+    switch (status) {
+      case 'Open':
+        return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+      case 'In Progress':
+        return 'bg-blue-500/15 text-blue-400 border-blue-500/30';
+      case 'Closed':
+        return 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+      default:
+        return 'bg-slate-500/15 text-slate-300 border-slate-500/30';
+    }
+  };
+
+  /* ---------- LOADING SKELETON ---------- */
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] text-xl text-slate-400">
-        Loading your tickets…
+      <div className="p-6 space-y-4">
+        {[1, 2, 3].map(i => (
+          <div
+            key={i}
+            className="h-28 rounded-xl bg-white/5 animate-pulse"
+          />
+        ))}
       </div>
     );
   }
 
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    
+    <div className="p-6 space-y-6">
+      <motion.h1
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-3xl font-bold tracking-tight"
+      >
+        🎫 My Tickets
+      </motion.h1>
 
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl sm:text-4xl font-bold">
-            My Tickets
-          </h1>
-          <p className="text-slate-400">
-            Track the status of all your submitted requests
-          </p>
-        </div>
+      {error && (
+        <p className="text-red-400">{error}</p>
+      )}
 
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl p-4">
-            {error}
-          </div>
-        )}
+      {tickets.length === 0 && (
+        <p className="text-slate-400">No tickets found</p>
+      )}
 
-        {tickets.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-16 text-center">
-            <p className="text-2xl font-semibold">No tickets yet</p>
-            <p className="text-slate-400 mt-2">
-              Once you create a ticket, it will appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {tickets.map(t => (
-              <div
-                key={t._id}
-                className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-indigo-500/50 hover:shadow-xl transition"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-lg font-semibold">
-                      {t.title || 'Untitled ticket'}
-                    </p>
-                    <StatusBadge status={t.status} />
-                  </div>
+      <AnimatePresence>
+        {tickets.map((t, index) => (
+          <motion.div
+            key={t._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ scale: 1.01 }}
+            className="
+              glass rounded-2xl p-5
+              border border-white/10
+              shadow-xl backdrop-blur-xl
+            "
+          >
+            {/* HEADER */}
+            <div className="flex justify-between items-start gap-3">
+              <div>
+                <p className="text-lg font-semibold">
+                  {t.title}
+                </p>
 
-                  <span className="text-xs bg-black/40 px-3 py-1 rounded-full text-slate-300">
-                    {t.referenceID || '—'}
-                  </span>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-white/10 text-sm text-slate-400">
-                  Ticket ID: <span className="text-slate-200">{t._id.slice(-6)}</span>
-                </div>
+                <span
+                  className={`inline-block mt-1 text-xs px-3 py-1 rounded-full border ${statusColor(t.status)}`}
+                >
+                  {t.status}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+              {/* ⚠️ WARNING */}
+              {(t.warningFlag || t.reopenCount > 1) && (
+                <motion.span
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="
+                    inline-flex items-center gap-1
+                    text-xs font-semibold px-3 py-1 rounded-full
+                    bg-yellow-500/20 text-yellow-400
+                    border border-yellow-500/30
+                  "
+                >
+                  ⚠ Reopened multiple times
+                </motion.span>
+              )}
+            </div>
+
+            {/* META */}
+            <p className="text-xs text-slate-500 mt-2">
+              Ref ID: {t.referenceID}
+            </p>
+
+            {/* ACTIONS */}
+            <div className="mt-4">
+              {t.status === 'Closed' ? (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03 }}
+                  onClick={() => reopenTicket(t._id)}
+                  className="
+                    px-4 py-2 rounded-lg text-sm font-medium
+                    bg-yellow-600 hover:bg-yellow-700
+                    transition-colors
+                  "
+                >
+                  🔄 Reopen Ticket
+                </motion.button>
+              ) : (
+                <span className="text-xs text-slate-400">
+                  Ticket must be closed to reopen
+                </span>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
-  );
-}
-
-/* ========================= */
-/* Status Badge              */
-/* ========================= */
-function StatusBadge({ status }) {
-  const safeStatus = status || 'Unknown';
-
-  const colorMap = {
-    'In Compliance Review': 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30',
-    'In Resolution': 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
-    'Waiting for Client': 'bg-orange-500/20 text-orange-300 border border-orange-500/30',
-    'Ready to Close': 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
-    'Closed': 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
-    'Unknown': 'bg-slate-500/20 text-slate-300 border border-slate-500/30'
-  };
-
-  return (
-    <span className={`inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full text-xs font-semibold ${colorMap[safeStatus] || colorMap.Unknown}`}>
-      <span className="w-2 h-2 rounded-full bg-current"></span>
-      {safeStatus}
-    </span>
   );
 }

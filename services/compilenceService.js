@@ -61,7 +61,7 @@ class ComplianceService {
     if (unresolvedCount > 0) {
       throw new Error('All department assignments are not resolved');
     }
-
+    
     // ✅ Final closure
     ticket.status = 'Closed';
     ticket.closedAt = new Date();

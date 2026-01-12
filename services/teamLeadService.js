@@ -3,9 +3,12 @@ const Ticket = require('../model/ticketmodel');
 
 class TeamLeadService {
   async getMyAssignments(teamLeadId) {
+
     return DepartmentAssignment.find({
       assigned_team_lead_id: teamLeadId
-    }).sort({ createdAt: 1 });
+    }).populate('ticket_id')             
+    .populate('assigned_manager_id')   
+    .sort({ createdAt: 1 });
   }
 
   async updateAssignmentStatus(assignment, newStatus) {
